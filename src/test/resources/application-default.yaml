@@ -1,0 +1,6 @@
+my.nested.config.props:
+  parent-field-1: test-1
+  parent-field-2: test-2
+  child:
+    child-field-1: test-3
+    child-field-2: test-4

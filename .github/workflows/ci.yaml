@@ -1,0 +1,31 @@
+name: CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        description: Git Ref (Optional)
+        required: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache protobuf-examples mvn
+        id: protobuf-examples-mvn
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./build
+            ~/.m2/repository
+            !~/.m2/repository/com/gituhb/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - run: sudo rm -rf ~/.m2/repository/com/github/daggerok
+      - run: ./mvnw -B dependency:resolve-plugins dependency:resolve
+      - run: ./mvnw clean test
